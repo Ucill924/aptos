@@ -50,25 +50,24 @@ async def deposit(sender: Account, token_amount: int):
     except Exception as e:
         print("❌ ERROR:", e)
 
-async def withdraw(sender: Account):
+async def withdraw(sender: Account, token_amount: int):
     try:
-        token_amount = random.randint(1, 10)
-        amount = token_amount * 1_000_000_000  
+        amount = token_amount * 1_000_000_000
         print(f"[*] Menandatangani dan mengirim transaksi withdraw dengan {token_amount} token...")
 
         payload = EntryFunction.natural(
             module="0xf7429cda18fc0dd78d0dc48b102158024f1dc3a511a2a65ea553b5970d65b028::eigenfi_move_vault_hstmove",
-            function="unstake",
-            ty_args=[], 
-            args=[TransactionArgument([str(amount)], Serializer.vector(Serializer.u64))] 
+            function="unstake", 
+            ty_args=[],
+            args=[
+                TransactionArgument([amount], Serializer.vector(Serializer.u64)) 
+            ]
         )
 
-        # Sign and submit the transaction
         signed_txn = await rest_client.create_bcs_signed_transaction(sender, TransactionPayload(payload))
         txn_hash = await rest_client.submit_bcs_transaction(signed_txn)
         print(f"[+] Transaction Hash (Withdraw): {txn_hash}")
 
-        # Check transaction status
         success = await check_txn_status(txn_hash)
         if success:
             print(f"[✓] Transaction {txn_hash} confirmed!")
