@@ -81,7 +81,7 @@ async def main():
                 if pk:
                     sender = Account.load_key(pk)
                     token_amount = random.randint(1, 10)
-                    await withdraw(sender, token_amount)
+                    await deposit(sender, token_amount)
                     await asyncio.sleep(30)
                     await withdraw(sender, token_amount)
                     await asyncio.sleep(random.uniform(2, 5)) 
